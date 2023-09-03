@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Request</title>
+</head>
+<body>
+    <h1>Would you like to share your location?</h1>
+    <button onclick="getLocation()">Yes</button>
+
+    <script>
+        function getLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Send the location data to your server
+                    sendLocationToServer(position.coords.latitude, position.coords.longitude);
+                }, function(error) {
+                    alert("Error getting location: " + error.message);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendLocationToServer(latitude, longitude) {
+            // Create an XMLHttpRequest or use the fetch API to send location data to the server
+            var xhr = new XMLHttpRequest();
+            var url = '/store_location'; // Replace with your server endpoint
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            var data = JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            });
+
+            xhr.send(data);
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert('Location data sent successfully.');
+                    } else {
+                        alert('Error sending location data to the server.');
+                    }
+                }
+            };
+        }
+    </script>
+</body>
+</html>
